@@ -11,3 +11,11 @@
 
 Задание 3 
 
+![Скриншот созданных ВМ](https://github.com/Mazaich/terraform-homework3/blob/master/2026-02-08_13-54-42.png?raw=true)
+![Скриншот созданных дисков](https://github.com/Mazaich/terraform-homework3/blob/master/2026-02-08_13-37-36.png?raw=true)
+
+
+Задание 4
+
+![Скриншот inventory.ini](https://github.com/Mazaich/terraform-homework3/blob/master/Screenshot_2026-02-08_13_40_57.png?raw=true)
+
