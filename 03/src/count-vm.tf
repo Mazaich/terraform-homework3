@@ -2,11 +2,11 @@ resource "yandex_compute_instance" "web" {
   count = 2
   name = "web-${count.index + 1}"
   platform_id = "standard-v3"
-  zone        = "ru-central1-a"
+  zone        = var.default_zone
 
   resources {
-    cores  = 2  
-    memory = 2  
+    cores  = 2
+    memory = 2
   }
 
   boot_disk {
@@ -18,16 +18,12 @@ resource "yandex_compute_instance" "web" {
   }
 
   network_interface {
-    subnet_id = "e9b84ehhf52u1gcvsmtp"
+    subnet_id = yandex_vpc_subnet.develop.id
     nat       = true
-    security_group_ids = ["enphqc9tcksgqlbqu2cv"]
+    security_group_ids = [yandex_vpc_security_group.example.id]
   }
 
   metadata = {
     ssh-keys = "ubuntu:${file("~/.ssh/id_ed25519_yandex.pub")}"
   }
-
-  depends_on = [
-    yandex_compute_instance.database
-  ]
 }
