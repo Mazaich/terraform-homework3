@@ -1,27 +1,27 @@
 resource "yandex_compute_disk" "storage_disks" {
-  count = 3
+  count = var.storage_disks_settings.count
   
   name = "storage-disk-${count.index + 1}"
-  type = "network-hdd"
+  type = var.storage_disks_settings.type
   zone = var.default_zone
-  size = 1
+  size = var.storage_disks_settings.size
 }
 
 resource "yandex_compute_instance" "storage" {
   name        = "storage"
-  platform_id = "standard-v3"
+  platform_id = var.storage_vm_settings.platform_id
   zone        = var.default_zone
 
   resources {
-    cores  = 2
-    memory = 2
+    cores  = var.storage_vm_settings.cpu
+    memory = var.storage_vm_settings.ram
   }
 
   boot_disk {
     initialize_params {
-      image_id = "fd8vmcue7aajpmeo39kk"
-      size     = 5
-      type     = "network-hdd"
+      image_id = data.yandex_compute_image.ubuntu_image.id
+      size     = var.storage_vm_settings.boot_disk
+      type     = var.storage_vm_settings.disk_type
     }
   }
 
@@ -32,7 +32,7 @@ resource "yandex_compute_instance" "storage" {
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_ed25519_yandex.pub")}"
+    ssh-keys = "${var.ssh_username}:${file(var.ssh_public_key_path)}"
   }
 
   dynamic "secondary_disk" {

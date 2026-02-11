@@ -1,19 +1,19 @@
 resource "yandex_compute_instance" "web" {
   count = 2
   name = "web-${count.index + 1}"
-  platform_id = "standard-v3"
+  platform_id = var.web_vm_settings.platform_id
   zone        = var.default_zone
 
   resources {
-    cores  = 2
-    memory = 2
+    cores  = var.web_vm_settings.cpu
+    memory = var.web_vm_settings.ram
   }
 
   boot_disk {
     initialize_params {
-      image_id = "fd8vmcue7aajpmeo39kk"
-      size     = 5
-      type     = "network-hdd"
+      image_id = data.yandex_compute_image.ubuntu_image.id
+      size     = var.web_vm_settings.boot_disk
+      type     = var.web_vm_settings.disk_type
     }
   }
 
@@ -24,6 +24,8 @@ resource "yandex_compute_instance" "web" {
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_ed25519_yandex.pub")}"
+    ssh-keys = "${var.ssh_username}:${file(var.ssh_public_key_path)}"
   }
+
+  depends_on = [yandex_compute_instance.database]
 }
